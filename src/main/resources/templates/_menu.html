@@ -5,14 +5,19 @@
 
     | &nbsp;
 
-    <a th:href="@{/signin}">Sign in</a>
+    <a th:if="${#request.userPrincipal == null}" th:href="@{/signin}">Sign in</a>
+
+
+    <a th:if="${#request.userPrincipal != null}" th:href="@{/profile}">My profile</a>
 
     | &nbsp;
 
-    <a th:href="@{/register}">Sign up</a>
+    <a th:if="${#request.userPrincipal == null}" th:href="@{/register}">Sign up</a>
     | &nbsp;
 
     <a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a>
+
+    <a style="float: right" th:if="${#request.userPrincipal != null}" th:href="@{/upload}">Upload snippet</a>
 
 
 </div>
