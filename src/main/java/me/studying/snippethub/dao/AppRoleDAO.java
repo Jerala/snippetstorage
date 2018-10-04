@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import me.studying.snippethub.entity.UserRole;
+import me.studying.snippethub.utils.DBUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
@@ -37,7 +38,7 @@ public class AppRoleDAO extends JdbcDaoSupport {
     private static Long getMaxID() {
         try
         {
-            Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE", "SYSTEM", "parlipa555");
+            Connection con = DBUtils.getConnection();
             CallableStatement stmt = con.prepareCall("{call GETMAXROLEUSERID(?)}");
             stmt.registerOutParameter(1, Types.INTEGER);
             stmt.execute();
@@ -52,7 +53,7 @@ public class AppRoleDAO extends JdbcDaoSupport {
     public static void createUserRole(Long userId) {
         try
         {
-            Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE", "SYSTEM", "parlipa555");
+            Connection con = DBUtils.getConnection();
             PreparedStatement stmt = con.prepareStatement("INSERT INTO USER_ROLE " +
                     "(ID, USER_ID, ROLE_ID) VALUES (?, ?, ?)");
             stmt.setLong(1, getMaxID() + 1);

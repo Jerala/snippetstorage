@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:overflow-y="http://www.w3.org/1999/xhtml"
+      xmlns:resize="http://www.w3.org/1999/xhtml">
+<head>
+    <title th:utext="${title}"></title>
+    <style>
+        th, td {
+            padding: 5px;
+        }
+        td span  {
+            font-size:90%;
+            font-style: italic;
+            color: red;
+        }
+        .error {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<!-- Include _menu.html -->
+<th:block th:include="/_menu"></th:block>
+
+<h2>Upload snippet</h2>
+
+<div th:if="${errorMessage != null}"
+     th:utext="${errorMessage}" class="error">...</div>
+
+<form th:action="@{/upload}" th:object="${uploadForm}" method="POST">
+    <table>
+        <tr>
+            <td>Programming Language</td>
+            <td>
+                <select th:field="*{PLID}">
+                    <option th:each="lang : ${langs}"
+                            th:value="${lang.PLID}"
+                            th:utext="${lang.PLName}"/>
+                </select>
+        </tr>
+        <tr>
+            <td>Snippet name</td>
+            <td><input type="text" th:field="*{snippet_name}" /></td>
+            <td>
+                <span th:if="${#fields.hasErrors('snippet_name')}" th:errors="*{snippet_name}">..</span>
+            </td>
+        </tr>
+        <tr>
+            <td>Your code</td>
+            <td><textarea rows="19" cols="125"
+                          overflow-y: scroll; style="resize:none" type="text" th:field="*{code_text}" /> </td>
+            <td>
+                <span th:if="${#fields.hasErrors('code_text')}" th:errors="*{code_text}">..</span>
+            </td>
+
+        </tr>
+        <tr>
+            <td>Tags</td>
+            <td><textarea cols="40" type="text" th:field="*{tags}" /> </td>
+
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <input type="submit" value="Submit" />
+                <a th:href="@{/}">Cancel</a>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>
