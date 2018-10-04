@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import javax.sql.DataSource;
 import me.studying.snippethub.formbean.AppUserForm;
 import me.studying.snippethub.entity.Users;
+import me.studying.snippethub.utils.DBUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -41,7 +42,7 @@ public class AppUserDAO extends JdbcDaoSupport {
 
         try
         {
-            Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE", "SYSTEM", "parlipa555");
+            Connection con = DBUtils.getConnection();
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM USERS");
             ResultSet rs = stmt.executeQuery();
 
@@ -127,7 +128,7 @@ public class AppUserDAO extends JdbcDaoSupport {
         String encrytedPassword = this.passwordEncoder.encode(form.getPassword());
         try
         {
-            Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE", "SYSTEM", "parlipa555");
+            Connection con = DBUtils.getConnection();
             PreparedStatement stmt = con.prepareStatement("INSERT INTO USERS " +
                             "(USER_ID, USER_NAME, PASSWORD, EMAIL, ROLE_ID, ENABLED) VALUES (?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, userId);
