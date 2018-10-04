@@ -11,9 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.sql.DataSource;
-import me.studying.snippethub.mapper.AppUserMapper;
 import me.studying.snippethub.formbean.AppUserForm;
-//import me.studying.snippethub.model.AppUser;
 import me.studying.snippethub.entity.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,23 +69,8 @@ public class AppUserDAO extends JdbcDaoSupport {
         this.setDataSource(dataSource);
     }
 
- /*   public AppUser findUserAccount(String userName) {
-        // Select .. from App_User u Where u.User_Name = ?
-        String sql = AppUserMapper.BASE_SQL + " where u.UserName = ? ";
-
-        Object[] params = new Object[] { userName };
-        AppUserMapper mapper = new AppUserMapper();
-        try {
-            AppUser userInfo = this.getJdbcTemplate().queryForObject(sql, params, mapper);
-            return userInfo;
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }*/
-
     public Users findUserAccount(String userName) {
         try {
-           // String sql = AppUserMapper.BASE_SQL + " where u.UserName = :userName ";
             String sql = "Select e from " + Users.class.getName() + " e " //
                     + " Where e.userName = :userName ";
 
@@ -146,7 +129,7 @@ public class AppUserDAO extends JdbcDaoSupport {
         {
             Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE", "SYSTEM", "parlipa555");
             PreparedStatement stmt = con.prepareStatement("INSERT INTO USERS " +
-                            "(USER_ID, USER_NAME, PASSWORD, EMAIL, ROLEID, ENABLED) VALUES (?, ?, ?, ?, ?, ?)");
+                            "(USER_ID, USER_NAME, PASSWORD, EMAIL, ROLE_ID, ENABLED) VALUES (?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, userId);
             stmt.setString(2, form.getUserName());
             stmt.setString(3, encrytedPassword);

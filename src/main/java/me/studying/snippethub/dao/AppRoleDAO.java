@@ -1,5 +1,6 @@
 package me.studying.snippethub.dao;
 
+import java.sql.*;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -25,25 +26,47 @@ public class AppRoleDAO extends JdbcDaoSupport {
         this.setDataSource(dataSource);
     }
 
-   /* public List<String> getRoleNames(Long userId) {
-        String sql = "Select r.Role_Name " //
-                + " from User_Role ur, App_Role r " //
-                + " where ur.Role_Id = r.Role_Id and ur.User_Id = ? ";
-
-        Object[] params = new Object[] { userId };
-
-        List<String> roles = this.getJdbcTemplate().queryForList(sql, params, String.class);
-
-        return roles;
-    }*/
-
     public List<String> getRoleNames(Long userId) {
         String sql = "Select ur.appRole.roleName from " + UserRole.class.getName() + " ur " //
                 + " where ur.appUser.userId = :userId ";
-
         Query query = this.entityManager.createQuery(sql, String.class);
         query.setParameter("userId", userId);
         return query.getResultList();
+    }
+
+    private static Long getMaxID() {
+        try
+        {
+            Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE", "SYSTEM", "parlipa555");
+            CallableStatement stmt = con.prepareCall("{call GETMAXROLEUSERID(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.execute();
+            return stmt.getLong(1);
+        }
+        catch(SQLException e) {
+            System.out.println(e);
+        }
+        return 0L;
+    }
+
+    public static void createUserRole(Long userId) {
+        try
+        {
+            Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE", "SYSTEM", "parlipa555");
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO USER_ROLE " +
+                    "(ID, USER_ID, ROLE_ID) VALUES (?, ?, ?)");
+            stmt.setLong(1, getMaxID() + 1);
+            stmt.setLong(2, userId);
+            stmt.setLong(3, 2);
+
+            stmt.executeUpdate();
+
+            con.close();
+            stmt.close();
+        }
+        catch(SQLException e) {
+            System.out.println(e);
+        }
     }
 
 }

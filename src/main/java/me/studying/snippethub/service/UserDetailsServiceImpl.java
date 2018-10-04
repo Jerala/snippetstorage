@@ -6,7 +6,6 @@ import java.util.List;
 import me.studying.snippethub.dao.AppUserDAO;
 import me.studying.snippethub.dao.AppRoleDAO;
 import me.studying.snippethub.entity.Users;
-//import me.studying.snippethub.model.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,10 +33,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         System.out.println("Found User: " + appUser);
-        System.out.println(appUser.getEncrytedPassword() + " " + appUser.getEmail());
         // [ROLE_USER, ROLE_ADMIN,..]
         List<String> roleNames = this.appRoleDAO.getRoleNames(appUser.getUserId());
-
         List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
         if (roleNames != null) {
             for (String role : roleNames) {
