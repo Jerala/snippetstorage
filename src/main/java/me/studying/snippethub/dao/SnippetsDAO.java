@@ -194,7 +194,7 @@ System.out.println(plName);
         try (Writer writer = new BufferedWriter(
                 new OutputStreamWriter(
                 new FileOutputStream(
-                        "snippets/" + PLName + "/" + Long.toString(userId) + "_" +
+                        "snippets/" + PLName + "/" + Long.toString(userId) + "-" +
                                 snippetName + ".txt"), "utf-8"))) {
             writer.write(text);
         }

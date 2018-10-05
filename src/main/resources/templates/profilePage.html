@@ -1,21 +1,33 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <script th:inline="javascript">
+        function getUserSnippets(json) {
+
+            var jsObj = JSON.parse(json);
+            jsObj.forEach( (i) => {
+                var pl_name = JSON.stringify(i.pl_name);
+                pl_name = pl_name.slice(1, pl_name.length - 1);
+                var name = JSON.stringify(i.SNIPPET_NAME);
+                name = name.slice(1, name.length - 1);
+                var id = i.USER_ID;
+                var reference = "/snippets/" + pl_name + "/" +
+                    id + "-" + name;
+
+            document.body.innerHTML += "<li><a href=" + reference + ">" + name + "</a></li>";
+        });
+        }
+    </script>
     <title>User Info</title>
 </head>
-<body>
+<body th:onload ="'getUserSnippets(\'' + ${jsonSnippets} + '\');'">
 <!-- Include _menu.html -->
 <th:block th:include="/_menu"></th:block>
-
 
 <h2>User Info Page</h2>
 <h3>Your name : <span th:utext="${#request.userPrincipal.name}"></span></h3>
 <b>This is protected page!</b>
-
 <br/><br/>
 
-<div th:if="${userInfo != null}" th:utext="${userInfo}"></div>
-
 </body>
-
 </html>

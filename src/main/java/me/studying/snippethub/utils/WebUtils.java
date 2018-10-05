@@ -1,15 +1,15 @@
 package me.studying.snippethub.utils;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.math.BigDecimal;
+import java.sql.*;
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.json.*;
 
 public class WebUtils {
 
@@ -57,5 +57,55 @@ public class WebUtils {
             System.out.println(e);
         }
         return 0L;
+    }
+
+    private static HashMap<Integer,String> getPlangsMap() {
+        HashMap<Integer, String> hm = new HashMap<>();
+        try {
+            Connection con = DBUtils.getConnection();
+            PreparedStatement stat = con.prepareStatement(
+                    "SELECT * FROM PLANGS");
+            ResultSet rs = stat.executeQuery();
+            while(rs.next()) {
+                hm.put(rs.getInt(1), rs.getString(2));
+            }
+        }
+        catch(SQLException e) {
+            System.out.println(e);
+        }
+        return hm;
+    }
+
+    public static JSONArray getJSONofUserSnippets() {
+        HashMap<Integer, String> pLangs = getPlangsMap();
+        Long userID = getUserID();
+        try {
+            Connection con = DBUtils.getConnection();
+            PreparedStatement stat = con.prepareStatement(
+                    "SELECT * from snippets where user_id=" + Long.toString(userID));
+            ResultSet rs = stat.executeQuery();
+
+            JSONArray json = new JSONArray();
+            ResultSetMetaData rsmd = rs.getMetaData();
+
+            Integer pl_id = 0;
+            while(rs.next()) {
+                int numColumns = rsmd.getColumnCount();
+                JSONObject obj = new JSONObject();
+                for (int i=1; i<=numColumns; i++) {
+                    String column_name = rsmd.getColumnName(i);
+                    obj.put(column_name, rs.getObject(column_name));
+                    if(column_name.toLowerCase().equals("pl_id"))
+                        pl_id = ((BigDecimal)rs.getObject(column_name)).intValue();
+                }
+                obj.put("pl_name", pLangs.get(pl_id));
+                json.put(obj);
+            }
+            return json;
+        }
+        catch(SQLException | JSONException e) {
+            System.out.println(e);
+        }
+        return new JSONArray();
     }
 }
