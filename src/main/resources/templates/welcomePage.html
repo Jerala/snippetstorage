@@ -11,5 +11,23 @@
 
 <h2>Home Page!</h2>
 
+<form method="GET" id="searchForm">
+    <table>
+        <tr>
+            <td>Search</td>
+            <td><input type="text" name="tagName" id="searchArea"/></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <input type="submit" value="Submit"/>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</form>
+<div id="response"></div>
 </body>
+<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
+<script type="text/javascript" th:src="@{/js/ajax.js}"></script>
 </html>

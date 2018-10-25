@@ -105,4 +105,6 @@ public class Snippets {
 
     public String getTags() {return tags;}
 
+    public void setTags(String tags) {this.tags = tags;}
+
 }
