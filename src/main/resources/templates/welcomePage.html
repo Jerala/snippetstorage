@@ -4,7 +4,7 @@
     <title th:utext="${title}"></title>
 </head>
 
-<body>
+<body onload="getMostPopularQueries()">
 
 <!-- Include _menu.html -->
 <th:block th:include="/_menu"></th:block>
@@ -27,6 +27,7 @@
     </table>
 </form>
 <div id="response"></div>
+<div id="popularQueries"></div>
 </body>
 <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
 <script type="text/javascript" th:src="@{/js/ajax.js}"></script>

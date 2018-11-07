@@ -43,7 +43,7 @@ public class AppUserDAO extends JdbcDaoSupport {
         try
         {
             Connection con = DBUtils.getConnection();
-            PreparedStatement stmt = con.prepareStatement("SELECT * FROM USERS");
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM public.USERS");
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next())
@@ -129,7 +129,7 @@ public class AppUserDAO extends JdbcDaoSupport {
         try
         {
             Connection con = DBUtils.getConnection();
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO USERS " +
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO public.USERS " +
                             "(USER_ID, USER_NAME, PASSWORD, EMAIL, ROLE_ID, ENABLED) VALUES (?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, userId);
             stmt.setString(2, form.getUserName());
