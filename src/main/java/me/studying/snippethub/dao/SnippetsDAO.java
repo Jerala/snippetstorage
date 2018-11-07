@@ -19,13 +19,9 @@ import me.studying.snippethub.formbean.UploadForm;
 import me.studying.snippethub.utils.DBUtils;
 import me.studying.snippethub.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 @Repository
 @Transactional
@@ -45,7 +41,7 @@ public class SnippetsDAO extends JdbcDaoSupport {
         try
         {
             Connection con = DBUtils.getConnection();
-            PreparedStatement stmt = con.prepareStatement("SELECT * FROM Snippets");
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM public.Snippets");
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next())
@@ -131,24 +127,23 @@ public class SnippetsDAO extends JdbcDaoSupport {
 
     public Snippets createSnippet(UploadForm form) {
         Long snippetId = this.getMaxSnippetId() + 1;
-        Long userId = WebUtils.getUserID();
+        Long userId = WebUtils.getUserID(null);
         String snippet_name = form.getSnippet_name().replaceAll(" ", "_");
+
+        String plName = getPLName(form.getPLID());
 
         String tagsStr = "";
         if(form.getTags() != null && !form.getTags().equals(""))
-            tagsStr = formatTags(form.getTags());
+            tagsStr = "#" + plName.toLowerCase() + formatTags(form.getTags());
         else
             tagsStr = "";
-
-        String plName = getPLName(form.getPLID());
-System.out.println(plName);
 
         createSnippetFile(userId, form.getCode_text(), plName, snippet_name);
 
         try
         {
             Connection con = DBUtils.getConnection();
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO Snippets " +
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO public.Snippets " +
                     "(SNIPPET_ID, PL_ID, SNIPPET_NAME, USER_ID, UPLOAD_DATE, LIKE_COUNT," +
                     "APPROVED, TAGS) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, snippetId);
@@ -181,9 +176,9 @@ System.out.println(plName);
         StringBuilder sb = new StringBuilder();
         for(String t : tag) {
             if(t.charAt(0) == '#')
-                sb.append(t);
+                sb.append(t.toLowerCase());
             else {
-                sb.append("#" + t);
+                sb.append("#" + t.toLowerCase());
             }
         }
         return sb.toString();
@@ -204,19 +199,21 @@ System.out.println(plName);
     }
 
     private String getPLName(long PLID) {
-        try {
-            Connection con = DBUtils.getConnection();
-            CallableStatement stmt = con.prepareCall("{call GETPLNAMEBYID(?,?)}");
-            stmt.setObject(1, PLID);
-            stmt.registerOutParameter(2, Types.VARCHAR);
-            stmt.execute();
-
-            return stmt.getString(2);
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Connection con = DBUtils.getConnection();
+//            CallableStatement stmt = con.prepareCall("{? = call GETPLNAMEBYID(?)}");
+//            stmt.registerOutParameter(1, Types.VARCHAR);
+//            stmt.setObject(2, PLID);
+//            stmt.execute();
+//
+//            return stmt.getString(1);
+//        }
+//        catch(SQLException e) {
+//            e.printStackTrace();
+//        }
+        return PLangsDAO.getPLangs_MAP().get(PLID).getPLName();
         // default lang
-        return "Java";
+       // return "Java";
     }
+
 }

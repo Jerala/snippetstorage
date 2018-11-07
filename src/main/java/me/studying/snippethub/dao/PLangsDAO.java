@@ -20,11 +20,15 @@ public class PLangsDAO {
         initDATA();
     }
 
+    public static Map<Long, PLangs> getPLangs_MAP() {
+        return PLangs_MAP;
+    }
+
     private static void initDATA() {
         try
         {
             Connection con = DBUtils.getConnection();
-            PreparedStatement stmt = con.prepareStatement("SELECT * FROM PLangs");
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM public.PLangs");
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next())

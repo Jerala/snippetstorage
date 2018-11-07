@@ -39,10 +39,10 @@ public class AppRoleDAO extends JdbcDaoSupport {
         try
         {
             Connection con = DBUtils.getConnection();
-            CallableStatement stmt = con.prepareCall("{call GETMAXROLEUSERID(?)}");
+            CallableStatement stmt = con.prepareCall("{? = call GETMAXROLEUSERID()}");
             stmt.registerOutParameter(1, Types.INTEGER);
             stmt.execute();
-            return stmt.getLong(1);
+            return (long)stmt.getInt(1);
         }
         catch(SQLException e) {
             System.out.println(e);
@@ -54,7 +54,7 @@ public class AppRoleDAO extends JdbcDaoSupport {
         try
         {
             Connection con = DBUtils.getConnection();
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO USER_ROLE " +
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO public.USER_ROLE " +
                     "(ID, USER_ID, ROLE_ID) VALUES (?, ?, ?)");
             stmt.setLong(1, getMaxID() + 1);
             stmt.setLong(2, userId);

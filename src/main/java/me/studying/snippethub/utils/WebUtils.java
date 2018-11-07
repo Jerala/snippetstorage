@@ -35,28 +35,35 @@ public class WebUtils {
         return sb.toString();
     }
 
-    public static Long getUserID() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String principal = auth.getPrincipal().toString();
-        String substr = principal.substring(principal.indexOf("Username: "));
-        int firstIdx = 10, secondIdx = substr.indexOf(";");
-        String userName = substr.substring(firstIdx, secondIdx);
+    public static Long getUserID(String userName) {
+
+        if(userName.equals(null))
+            userName = getCurrentUserName();
 
         try
         {
             System.out.println(userName);
             Connection con = DBUtils.getConnection();
-            CallableStatement stmt = con.prepareCall("{call GETUSERID(?,?)}");
-            stmt.setObject(1, userName);
-            stmt.registerOutParameter(2, Types.INTEGER);
+            CallableStatement stmt = con.prepareCall("{? = call GETUSERID(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setObject(2, userName);
             stmt.execute();
 
-            return (long)stmt.getInt(2);
+            return (long)stmt.getInt(1);
         }
         catch(SQLException e) {
             System.out.println(e);
         }
         return 0L;
+    }
+
+    public static String getCurrentUserName() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String principal = auth.getPrincipal().toString();
+        String substr = principal.substring(principal.indexOf("Username: "));
+        int firstIdx = 10, secondIdx = substr.indexOf(";");
+        String userName = substr.substring(firstIdx, secondIdx);
+        return userName;
     }
 
     private static HashMap<Integer,String> getPlangsMap() {
@@ -76,13 +83,13 @@ public class WebUtils {
         return hm;
     }
 
-    public static JSONArray getJSONofUserSnippets() {
+    public static JSONArray getJSONofUserSnippets(Long id) {
         HashMap<Integer, String> pLangs = getPlangsMap();
-        Long userID = getUserID();
+       // Long userID = getUserID();
         try {
             Connection con = DBUtils.getConnection();
             PreparedStatement stat = con.prepareStatement(
-                    "SELECT * from snippets where user_id=" + Long.toString(userID));
+                    "SELECT * from public.snippets where user_id=" + Long.toString(id));
             ResultSet rs = stat.executeQuery();
 
             JSONArray json = new JSONArray();
@@ -96,7 +103,7 @@ public class WebUtils {
                     String column_name = rsmd.getColumnName(i);
                     obj.put(column_name, rs.getObject(column_name));
                     if(column_name.toLowerCase().equals("pl_id"))
-                        pl_id = ((BigDecimal)rs.getObject(column_name)).intValue();
+                        pl_id = (int)rs.getObject(column_name);
                 }
                 obj.put("pl_name", pLangs.get(pl_id));
                 json.put(obj);

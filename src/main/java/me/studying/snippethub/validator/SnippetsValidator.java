@@ -42,7 +42,7 @@ public class SnippetsValidator implements Validator {
         if (!errors.hasFieldErrors("snippet_name")) {
             Snippets snippet = snippetsDAO.findSnippetByNameAndUserID(
                     uploadForm.getSnippet_name().replaceAll(" ", "_"),
-                    WebUtils.getUserID());
+                    WebUtils.getUserID(null));
             if (snippet != null)
                 errors.rejectValue("snippet_name", "Duplicate.uploadForm.snippet_name");
         }

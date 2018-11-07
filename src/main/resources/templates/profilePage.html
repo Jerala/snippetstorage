@@ -8,9 +8,9 @@
             jsObj.forEach( (i) => {
                 var pl_name = JSON.stringify(i.pl_name);
                 pl_name = pl_name.slice(1, pl_name.length - 1);
-                var name = JSON.stringify(i.SNIPPET_NAME);
+                var name = JSON.stringify(i.snippet_name);
                 name = name.slice(1, name.length - 1);
-                var id = i.USER_ID;
+                var id = i.user_id;
                 var reference = "/snippets/" + pl_name + "/" +
                     id + "-" + name;
 
@@ -25,8 +25,7 @@
 <th:block th:include="/_menu"></th:block>
 
 <h2>User Info Page</h2>
-<h3>Your name : <span th:utext="${#request.userPrincipal.name}"></span></h3>
-<b>This is protected page!</b>
+<h3>User name : <span th:utext="${userName}"></span></h3>
 <br/><br/>
 
 </body>

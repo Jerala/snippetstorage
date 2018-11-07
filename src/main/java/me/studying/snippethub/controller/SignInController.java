@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -38,35 +39,31 @@ public class SignInController {
 
         System.out.println("User Name: " + userName);
 
-        User loginedUser = (User) ((Authentication) principal).getPrincipal();
+       // User loginedUser = (User) ((Authentication) principal).getPrincipal();
 
-        JSONArray ja = WebUtils.getJSONofUserSnippets();
-        StringBuilder sb = new StringBuilder();
-        try {
-            for (int i = 0; i < ja.length(); i++) {
-                sb.append(ja.getJSONObject(i).toString());
-            }
-        }
-        catch(Exception e) {System.out.println(e);}
+        JSONArray ja = WebUtils.getJSONofUserSnippets(WebUtils.getUserID(userName));
 
-        String userInfo = WebUtils.toString(loginedUser);
-        model.addAttribute("userInfo", userInfo);
+      //  String userInfo = WebUtils.toString(loginedUser);
+        model.addAttribute("userName", userName);
         model.addAttribute("jsonSnippets", ja);
 
         return "profilePage";
     }
 
+    @RequestMapping(value = "/{userName}", method = RequestMethod.GET)
+    public String getUserPage(@PathVariable("userName") String userName,
+                              Model model, Principal principal) {
 
-  /*  @RequestMapping("/profile")
-    public String viewProfile(Model model, Principal principal) {
+        String currentUserName = principal.getName();
 
-        User loginedUser = (User) ((Authentication) principal).getPrincipal();
-        String userInfo = WebUtils.toString(loginedUser);
+        if(currentUserName.equals(userName)) {
+            return "redirect:/profile";
+        }
 
-        JSONArray ja = WebUtils.getJSONofUserSnippets();
+        JSONArray ja = WebUtils.getJSONofUserSnippets(WebUtils.getUserID(userName));
 
+        model.addAttribute("userName", userName);
         model.addAttribute("jsonSnippets", ja);
-        model.addAttribute("userInfo", userInfo);
         return "profilePage";
-    }*/
+    }
 }
