@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:include="/_menu"></th:block>
+<textarea readonly rows="25" cols="45"
+          name="notes" th:inline="text">[[${codeText}]]
+</textarea>
+</body>
+</html>
