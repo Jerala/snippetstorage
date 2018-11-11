@@ -26,19 +26,19 @@ public class Users {
 
     @Id
     @GeneratedValue
-    @Column(name = "User_Id", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "User_Name", length = 36, nullable = false)
+    @Column(name = "user_name", length = 36, nullable = false)
     private String userName;
 
-    @Column(name = "Password", length = 128, nullable = false)
+    @Column(name = "password", length = 128, nullable = false)
     private String encrytedPassword;
 
-    @Column(name = "Enabled", length = 2, nullable = false)
+    @Column(name = "enabled", length = 2, nullable = false)
     private boolean enabled;
 
-    @Column(name = "EMAIL", length = 128, nullable = false)
+    @Column(name = "email", length = 128, nullable = false)
     private String email;
 
     public Long getUserId() {

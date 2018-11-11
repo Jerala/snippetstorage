@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body onload="getUsers()">
+<th:block th:include="/_menu"></th:block>
+<p>admin page</p>
+<div id="usersRefs"></div>
+<script type="text/javascript" th:src="@{/js/adminFunctions.js}"></script>
+</body>
+</html>

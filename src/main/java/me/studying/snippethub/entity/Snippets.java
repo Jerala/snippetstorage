@@ -12,7 +12,7 @@ public class Snippets {
     public Snippets() {}
     public Snippets(Long snippet_id, Long PL_ID, String snippet_name,
                     Long user_id, Date upload_date, Long like_count,
-                    boolean approved, String tags) {
+                    Integer approved, String tags) {
         this.snippet_id = snippet_id;
         this.PL_ID = PL_ID;
         this.snippet_name = snippet_name;
@@ -44,12 +44,10 @@ public class Snippets {
     private Long like_count;
 
     @Column(name = "APPROVED", length = 1, nullable = false)
-    private boolean approved;
+    private Integer approved;
 
     @Column(name = "TAGS", nullable = true)
     private String tags;
-
-    private String code_text;
 
     public Long getSnippetId() {
         return snippet_id;
@@ -93,15 +91,9 @@ public class Snippets {
 
     public void setLikesCount(Long like_count) { this.like_count = like_count; }
 
-    public boolean isApproved() {return approved; }
+    public Integer getApproved() {return approved; }
 
-    public void setApproved(boolean approved) {this.approved = approved; }
-
-    public String getCode_text() {return code_text; }
-
-    public void setCode_text(String code_text) {
-        this.code_text = code_text;
-    }
+    public void setApproved(Integer approved) {this.approved = approved; }
 
     public String getTags() {return tags;}
 

@@ -1,5 +1,6 @@
 package me.studying.snippethub.controller;
 
+import me.studying.snippethub.dao.PLangsDAO;
 import me.studying.snippethub.dao.QueriesDAO;
 import me.studying.snippethub.dao.SnippetsDAO;
 import me.studying.snippethub.entity.Queries;
@@ -29,9 +30,13 @@ public class MainController {
     private QueriesDAO queriesDAO;
 
     @Autowired
-    public MainController(SnippetsServiceImpl snippetFinderService, QueriesDAO queriesDAO) {
+    private PLangsDAO pLangsDAO;
+
+    @Autowired
+    public MainController(SnippetsServiceImpl snippetFinderService, QueriesDAO queriesDAO, PLangsDAO pLangsDAO) {
         this.snippetsService = snippetFinderService;
         this.queriesDAO = queriesDAO;
+        this.pLangsDAO = pLangsDAO;
     }
 
     @RequestMapping("/")
@@ -61,13 +66,25 @@ public class MainController {
     @ResponseBody
     public List<Snippets> findSnippet(@RequestParam(value = "tagName", required = true,
     defaultValue = ".") String tag) {
-        snippetsService.registerSearchQuery(tag);
-        return snippetsService.findSnippetByTag(tag);
+        snippetsService.registerSearchQuery(tag.toLowerCase());
+        return snippetsService.findSnippetByTag(tag.toLowerCase());
     }
 
     @RequestMapping(value = "/getMostPopularQueries", method = RequestMethod.GET)
     @ResponseBody
     public List<Queries> getMostPopularQueries() {
         return queriesDAO.getMostPopularQueries();
+    }
+
+    @RequestMapping(value = "/isAuth", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUserName(Principal principal) {
+        return principal == null ? "no" : principal.getName();
+    }
+
+    @RequestMapping(value = "/getPLName", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPLName(@RequestParam(value = "plId") Long plId) {
+        return pLangsDAO.findPLByID(plId).getPLName();
     }
 }
