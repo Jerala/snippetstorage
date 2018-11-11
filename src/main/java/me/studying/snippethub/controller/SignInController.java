@@ -54,7 +54,9 @@ public class SignInController {
     public String getUserPage(@PathVariable("userName") String userName,
                               Model model, Principal principal) {
 
-        String currentUserName = principal.getName();
+       // String currentUserName = principal.getName();
+
+        String currentUserName = principal == null ? "unknown" : principal.getName();
 
         if(currentUserName.equals(userName)) {
             return "redirect:/profile";

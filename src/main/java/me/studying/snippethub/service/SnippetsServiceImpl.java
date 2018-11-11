@@ -41,8 +41,7 @@ public class SnippetsServiceImpl {
                 snippet.setUser_id(rs.getLong("USER_ID"));
                 snippet.setUploadDate(rs.getDate("UPLOAD_DATE"));
                 snippet.setLikesCount(rs.getLong("LIKE_COUNT"));
-                long approved = rs.getLong("APPROVED");
-                snippet.setApproved(approved == 0 ? false : true);
+                snippet.setApproved(rs.getInt("APPROVED"));
                 snippet.setTags(rs.getString("TAGS"));
 
                 snippets.add(snippet);
@@ -120,8 +119,10 @@ public class SnippetsServiceImpl {
             tagsArr = tagsArr.subList(0,5);
         tagsArr.sort(String::compareToIgnoreCase);
         StringBuilder query = new StringBuilder();
-        for(String s: tagsArr)
-            query.append(s + " ");
+
+        for(int i = 0; i < tagsArr.size() - 1; i++)
+            query.append(tagsArr.get(i) + " ");
+        query.append(tagsArr.get(tagsArr.size() - 1));
 
         // perform query
         try {
@@ -133,6 +134,7 @@ public class SnippetsServiceImpl {
             stmt.setString(2, query.toString());
             stmt.execute();
             Long counter = stmt.getLong(1);
+            stmt.close();
 
             // create new row in table
             if(counter == 0) {
@@ -145,29 +147,35 @@ public class SnippetsServiceImpl {
                 statement.setLong(2, 1L);
                 statement.setDate(3, new java.sql.Date((new java.util.Date()).getTime()));
                 statement.executeUpdate();
+                statement.close();
             }
             else {
                 PreparedStatement statement = connection.prepareStatement(
                         "UPDATE public.QUERIES SET counter = counter + 1 WHERE query = ?");
                 statement.setString(1, query.toString());
                 statement.executeUpdate();
+                statement.close();
             }
-
+            connection.close();
         } catch(SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-//    public List<Queries> getMostPopularQueries() {
-//        List<Queries> queries = new ArrayList<>();
-//        try {
-//            Connection connection = DBUtils.getConnection();
-//            PreparedStatement statement = connection.prepareStatement(
-//                    "SELECT * FROM QUERIES ORDER BY COUNTER LIMIT 10");
-//
-//        } catch (SQLException e) {
-//            System.out.println(e);
-//        }
-//        return queries;
-//    }
+    public Long getSnippetId(Long userId, String snippetName) {
+        try {
+            Connection connection = DBUtils.getConnection();
+            CallableStatement stmt = connection.prepareCall(
+                    "{? = call getsnippetid(?, ?)}");
+            stmt.registerOutParameter(1, Types.BIGINT);
+            stmt.setLong(2, userId);
+            stmt.setString(3, snippetName);
+            stmt.execute();
+            return stmt.getLong(1);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return 0L;
+    }
+
 }

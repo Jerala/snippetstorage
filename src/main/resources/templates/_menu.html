@@ -13,9 +13,10 @@
     | &nbsp;
 
     <a th:if="${#request.userPrincipal == null}" th:href="@{/register}">Sign up</a>
+
     | &nbsp;
 
-    <a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a>
+    <a th:if="${#request.isUserInRole('ROLE_ADMIN')}" th:href="@{/adminPanel}">Admin Panel</a>
 
     <a style="float: right" th:if="${#request.userPrincipal != null}" th:href="@{/upload}">Upload snippet</a>
 

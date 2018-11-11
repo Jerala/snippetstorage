@@ -9,5 +9,16 @@
 <textarea readonly rows="25" cols="45"
           name="notes" th:inline="text">[[${codeText}]]
 </textarea>
+<button th:onclick="'changeState(\'' + ${user_id} + '\', \'' + ${snippet_name} + '\');'">
+    LOIS
+</button>
+
+<button th:if="${#request.isUserInRole('ROLE_ADMIN')}")}
+        th:onclick="'approveSnippet(\'' + ${#request.getRequestURI()} + '\')'">Approve snippet</button>
+<button th:if="${#request.isUserInRole('ROLE_ADMIN')}")}
+        th:onclick="'deleteSnippet(\'' + ${#request.getRequestURI()} + '\')'">Delete snippet</button>
+<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
+<script type="text/javascript" th:src="@{/js/likes.js}"></script>
+<script type="text/javascript" th:src="@{/js/adminFunctions.js}"></script>
 </body>
 </html>

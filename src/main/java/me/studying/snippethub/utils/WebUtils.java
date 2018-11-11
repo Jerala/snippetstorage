@@ -37,12 +37,11 @@ public class WebUtils {
 
     public static Long getUserID(String userName) {
 
-        if(userName.equals(null))
+        if(userName == null)
             userName = getCurrentUserName();
 
         try
         {
-            System.out.println(userName);
             Connection con = DBUtils.getConnection();
             CallableStatement stmt = con.prepareCall("{? = call GETUSERID(?)}");
             stmt.registerOutParameter(1, Types.INTEGER);

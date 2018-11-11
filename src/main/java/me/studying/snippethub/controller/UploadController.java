@@ -95,7 +95,7 @@ public class UploadController {
     @RequestMapping("/uploadSuccessful")
     public String viewRegisterSuccessful(Model model) {
 
-        return "uploadSuccessful";
+        return "profilePage";
     }
 
 }

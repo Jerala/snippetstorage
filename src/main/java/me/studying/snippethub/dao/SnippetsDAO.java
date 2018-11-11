@@ -53,9 +53,7 @@ public class SnippetsDAO extends JdbcDaoSupport {
                 snippet.setUser_id(rs.getLong("USER_ID"));
                 snippet.setUploadDate(rs.getDate("UPLOAD_DATE"));
                 snippet.setLikesCount(rs.getLong("Like_Count"));
-                int approved = rs.getInt("Approved");
-                boolean approvedBool = approved == 0 ? false : true;
-                snippet.setApproved(approvedBool);
+                snippet.setApproved(rs.getInt("Approved"));
                 Snippets_MAP.put(snippet.getSnippetId(), snippet);
             }
 
@@ -164,7 +162,7 @@ public class SnippetsDAO extends JdbcDaoSupport {
             System.out.println(e);
         }
         Snippets snippet = new Snippets(snippetId, form.getPLID(), snippet_name,
-                userId, new Date(), 0L, false, tagsStr);
+                userId, new Date(), 0L, 0, tagsStr);
 
         Snippets_MAP.put(snippet.getSnippetId(), snippet);
         return snippet;
@@ -199,21 +197,9 @@ public class SnippetsDAO extends JdbcDaoSupport {
     }
 
     private String getPLName(long PLID) {
-//        try {
-//            Connection con = DBUtils.getConnection();
-//            CallableStatement stmt = con.prepareCall("{? = call GETPLNAMEBYID(?)}");
-//            stmt.registerOutParameter(1, Types.VARCHAR);
-//            stmt.setObject(2, PLID);
-//            stmt.execute();
-//
-//            return stmt.getString(1);
-//        }
-//        catch(SQLException e) {
-//            e.printStackTrace();
-//        }
+
         return PLangsDAO.getPLangs_MAP().get(PLID).getPLName();
-        // default lang
-       // return "Java";
+
     }
 
 }

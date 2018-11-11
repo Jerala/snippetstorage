@@ -20,6 +20,8 @@ public class SnippetsController {
         HashMap<String, Object> snippetData = snippetUtils.getSnippetData(user_id, snippet_name);
         String text = snippetUtils.getSnippetText(pl_name, user_id, snippet_name);
         model.addAttribute("codeText", text);
+        model.addAttribute("user_id", user_id);
+        model.addAttribute("snippet_name", snippet_name);
         return "snippetPage";
     }
 }

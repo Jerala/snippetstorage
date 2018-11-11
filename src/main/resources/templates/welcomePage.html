@@ -2,33 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:utext="${title}"></title>
+    <link rel="stylesheet" th:href="@{/js/newStyle.css}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 </head>
 
 <body onload="getMostPopularQueries()">
 
-<!-- Include _menu.html -->
-<th:block th:include="/_menu"></th:block>
+<div class="container">
+    <th:block th:include="/_menu"></th:block>
+    <div class="navBar">
+        <a href="" class="logo" title="Main Page">SCS</a>
+        <div class="searchBox">
+            <form action="" id="searchFrm">
+                <input type="input" name="search" id="search" placeholder="Search for...">
+                <button class="icon" onclick="getSearchRes()"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
 
-<h2>Home Page!</h2>
+        <a class ="register" th:if="${#request.userPrincipal == null}" th:href="@{/register}">Sign up</a>
+        <a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a>
 
-<form method="GET" id="searchForm">
-    <table>
-        <tr>
-            <td>Search</td>
-            <td><input type="text" name="tagName" id="searchArea"/></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td>
-                <input type="submit" value="Submit"/>
-            </td>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
-</form>
-<div id="response"></div>
-<div id="popularQueries"></div>
+        <div class="signIn">
+            <button><i class="fas fa-key"></i></button>
+        </div>
+    </div>
+    <div class="mainBlock">
+        <div class="emptyField">
+            <br>
+        </div>
+        <div class="usersSnippets bor1"></div>
+        <div class="searchResults bor2"></div>
+        <div class="popularSearch bor3">
+            <p>Popular search:</p>
+        </div>
+    </div>
+</div>
 </body>
 <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
 <script type="text/javascript" th:src="@{/js/ajax.js}"></script>
+<script type="text/javascript" th:src="@{/js/LOX.js}"></script>
 </html>
