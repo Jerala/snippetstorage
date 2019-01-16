@@ -106,6 +106,16 @@ public class AppUserDAO extends JdbcDaoSupport {
         return null;
     }
 
+    public static Users findAppUserByID(int id) {
+        Collection<Users> appUsers = USERS_MAP.values();
+        for (Users u : appUsers) {
+            if (u.getUserId() == id) {
+                return u;
+            }
+        }
+        return null;
+    }
+
     public Users findAppUserByEmail(String email) {
         Collection<Users> appUsers = USERS_MAP.values();
         for (Users u : appUsers) {

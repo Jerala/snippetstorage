@@ -5,7 +5,9 @@ import me.studying.snippethub.dao.SnippetsDAO;
 import me.studying.snippethub.entity.PLangs;
 import me.studying.snippethub.entity.Snippets;
 import me.studying.snippethub.formbean.UploadForm;
+import me.studying.snippethub.utils.WebUtils;
 import me.studying.snippethub.validator.SnippetsValidator;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 import static me.studying.snippethub.utils.AuthChecker.isAuth;
@@ -66,7 +69,8 @@ public class UploadController {
     public String saveRegister(Model model, //
                                @ModelAttribute("uploadForm") @Validated UploadForm uploadForm, //
                                BindingResult result, //
-                               final RedirectAttributes redirectAttributes) {
+                               final RedirectAttributes redirectAttributes,
+                               Principal principal) {
 
         // Validate result
         if (result.hasErrors()) {
@@ -87,9 +91,14 @@ public class UploadController {
             return "uploadPage";
         }
 
+        String userName = principal.getName();
+        JSONArray ja = WebUtils.getJSONofUserSnippets(WebUtils.getUserID(userName));
+
+        redirectAttributes.addFlashAttribute("userName", userName);
+        redirectAttributes.addFlashAttribute("jsonSnippets", ja);
        // redirectAttributes.addFlashAttribute("flashSnippet", newSnippet);
 
-        return "redirect:/uploadSuccessful";
+        return "redirect:/profile";
     }
 
     @RequestMapping("/uploadSuccessful")

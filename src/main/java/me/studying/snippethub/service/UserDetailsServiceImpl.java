@@ -1,5 +1,8 @@
 package me.studying.snippethub.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +51,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 appUser.getEncrytedPassword(), grantList);
 
         return userDetails;
+    }
+
+    public static String getLicenseText() {
+        String path = "./termOfService/termOfService.txt";
+        String text = "";
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get(path));
+            text = new String(encoded, "UTF-8");
+        }
+        catch(IOException e) {
+            System.out.println(e);
+        }
+        return text;
     }
 
 }

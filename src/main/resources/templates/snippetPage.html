@@ -2,23 +2,73 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Snippet</title>
+    <link rel="stylesheet" th:href="@{/js/newStyle.css}">
+    <link rel="stylesheet" th:href="@{/js/prism.css}">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 </head>
-<body>
-<th:block th:include="/_menu"></th:block>
-<textarea readonly rows="25" cols="45"
-          name="notes" th:inline="text">[[${codeText}]]
-</textarea>
-<button th:onclick="'changeState(\'' + ${user_id} + '\', \'' + ${snippet_name} + '\');'">
-    LOIS
-</button>
+<body th:onload="'chooseState(\'' + ${user_id} + '\', \'' + ${snippet_name} + '\'); getUserSnippets(\'' + ${tags} + '\');'">
+<div class="container">
+    <div class="navBar navBarMargin">
+        <a href="/" class="logo" title="Main Page">SCS</a>
+        <div class="searchBox" hidden="true">
+            <form action="" id="searchFrm">
+                <input type="input" name="search" id="search" placeholder="Search for...">
+                <button class="icon" onclick="getSearchRes()"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
 
-<button th:if="${#request.isUserInRole('ROLE_ADMIN')}")}
-        th:onclick="'approveSnippet(\'' + ${#request.getRequestURI()} + '\')'">Approve snippet</button>
-<button th:if="${#request.isUserInRole('ROLE_ADMIN')}")}
-        th:onclick="'deleteSnippet(\'' + ${#request.getRequestURI()} + '\')'">Delete snippet</button>
-<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
-<script type="text/javascript" th:src="@{/js/likes.js}"></script>
-<script type="text/javascript" th:src="@{/js/adminFunctions.js}"></script>
+        <a class="headlink" th:if="${#request.userPrincipal == null}" th:href="@{/register}">Registration</a>
+        <a th:if="${#request.userPrincipal != null}" th:href="@{/profile}" class="headlink">Profile</a>
+        <a th:if="${#request.userPrincipal != null}" th:href="@{/upload}" class="headlink">Create new snippet</a>
+        <a th:if="${#request.isUserInRole('ROLE_ADMIN')}" th:href="@{/adminPanel}" class="headlink">Admin Panel</a>
+        <a th:if="${#request.userPrincipal != null}" th:href="@{/logout}" class="headlink">Logout</a>
+
+        <div class="signIn" th:if="${#request.userPrincipal == null}">
+            <button class="login-button"><i class="fas fa-key"></i></button>
+            <div class="login-content">
+                <form class="login-form" name='f' th:action="@{/j_spring_security_check}" method='POST'>
+                    <input id="username" type="text" name='username' placeholder="Ваш логин" required>
+                    <input id="password" type="password" name='password' placeholder="Пароль" required>
+                    <div class="buttonBlock">
+                        <input type="submit" id="submit" value="Войти">
+                        <label><input type="checkbox" value="Remember me">
+                            <div>Remember me</div>
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <form class="codeBlock">
+        <h2 class="SnipName">[[${snippet_name}]]</h2>
+        <div class="spaceBetween">
+            <h4 class="release">Released by: [[${user_name}]]</h4>
+            <!--<button id="like" th:onclick="'changeState(\'' + ${user_id} + '\', \'' + ${snippet_name} + '\');'">lois-->
+            <!--</button>-->
+            <a th:if="${#request.isUserInRole('ROLE_ADMIN') || #request.isUserInRole('ROLE_USER')}"><img id="like" src="https://vignette.wikia.nocookie.net/rutube9658/images/1/1c/TgOZSxs_0s.jpg/revision/latest?cb=20170211070720&path-prefix=ru"
+              height="30" width="30" th:onclick="'changeState(\'' + ${user_id} + '\', \'' + ${snippet_name} + '\');'"></a>
+            <span th:unless="${#request.isUserInRole('ROLE_ADMIN') || #request.isUserInRole('ROLE_USER')}">Likes count: </span><span id="start_like_count">[[${like_count}]]</span>
+        </div>
+        <pre class="line-numbers"><code class="language-none">[[${codeText}]]
+            </code></pre>
+        <div class="tagsContainer"></div>
+    </form>
+    <button th:if="${#request.isUserInRole('ROLE_ADMIN')}" )}
+            th:onclick="'approveSnippet(\'' + ${#request.getRequestURI()} + '\')'">Approve snippet
+    </button>
+    <button th:if="${#request.isUserInRole('ROLE_ADMIN')}" )}
+            th:onclick="'deleteSnippet(\'' + ${#request.getRequestURI()} + '\')'">Delete snippet
+    </button>
+</div>
+
+    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
+    <script type="text/javascript" th:src="@{/js/likes.js}"></script>
+    <script type="text/javascript" th:src="@{/js/adminFunctions.js}"></script>
+    <script type="text/javascript" th:src="@{/js/ajax.js}"></script>
+    <script type="text/javascript" th:src="@{/js/LOX.js}"></script>
+    <script type="text/javascript" th:src="@{/js/prism.js}"></script>
 </body>
 </html>

@@ -3,6 +3,9 @@
       xmlns:resize="http://www.w3.org/1999/xhtml">
 <head>
     <title th:utext="${title}"></title>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/js/newStyle.css}">
     <style>
         th, td {
             padding: 5px;
@@ -19,56 +22,68 @@
     </style>
 </head>
 <body>
-<!-- Include _menu.html -->
-<th:block th:include="/_menu"></th:block>
-
-<h2>Upload snippet</h2>
-
 <div th:if="${errorMessage != null}"
      th:utext="${errorMessage}" class="error">...</div>
 
-<form th:action="@{/upload}" th:object="${uploadForm}" method="POST">
-    <table>
-        <tr>
-            <td>Programming Language</td>
-            <td>
-                <select th:field="*{PLID}">
-                    <option th:each="lang : ${langs}"
-                            th:value="${lang.PLID}"
-                            th:utext="${lang.PLName}"/>
-                </select>
-        </tr>
-        <tr>
-            <td>Snippet name</td>
-            <td><input type="text" th:field="*{snippet_name}" /></td>
-            <td>
-                <span th:if="${#fields.hasErrors('snippet_name')}" th:errors="*{snippet_name}">..</span>
-            </td>
-        </tr>
-        <tr>
-            <td>Your code</td>
-            <td><textarea rows="19" cols="125"
-                          overflow-y: scroll; style="resize:none" type="text" th:field="*{code_text}" /> </td>
-            <td>
-                <span th:if="${#fields.hasErrors('code_text')}" th:errors="*{code_text}">..</span>
-            </td>
-
-        </tr>
-        <tr>
-            <td>Tags</td>
-            <td><textarea cols="40" type="text" th:field="*{tags}" /> </td>
-
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td>
-                <input type="submit" value="Submit" />
-                <a th:href="@{/}">Cancel</a>
-            </td>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
-</form>
-
+<div class="container">
+    <div class="navBar navBarMargin">
+        <a href="/" class="logo" title="Main Page">SCS</a>
+        <div class="searchBox">
+            <form action="" style="display:none">
+                <input type="input" name="search" id="search" placeholder="Search for...">
+                <button class="icon"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        <a class="headlink" th:if="${#request.userPrincipal == null}" th:href="@{/register}">Registration</a>
+        <a th:if="${#request.userPrincipal != null}" th:href="@{/profile}" class="headlink">Profile</a>
+        <a th:if="${#request.userPrincipal != null}" th:href="@{/upload}" class="headlink">Create new snippet</a>
+        <a th:if="${#request.userPrincipal != null}" th:href="@{/adminPanel}" class="headlink">Admin Panel</a>
+        <a th:if="${#request.userPrincipal != null}" th:href="@{/logout}" class="headlink">Logout</a>
+        <div class="signIn" th:if="${#request.userPrincipal == null}">
+            <button class="login-button"><i class="fas fa-key"></i></button>
+            <div class="login-content">
+                <form class="login-form" name='f' th:action="@{/j_spring_security_check}" method='POST'>
+                    <input id="username" type="text" name='username' placeholder="Ваш логин" required>
+                    <input id="password" type="password" name='password' placeholder="Пароль" required>
+                    <div class="buttonBlock">
+                        <input type="submit" id="submit" value="Войти">
+                        <label><input type="checkbox" value="Remember me"><div>Remember me</div></label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <form class="flexContainer" action="" name="newSnippet" th:action="@{/upload}" th:object="${uploadForm}" method="POST">
+        <!--<div class="tagBlock window">-->
+            <!--&lt;!&ndash;<p>Теги:</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="tagPanel">&ndash;&gt;-->
+                <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="color radius"><br><br></div>                            &lt;!&ndash; Заглушка для тегов &ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--<br>-->
+            <!--&lt;!&ndash;<input class="button" type="submit" value="Сохранить">&ndash;&gt;-->
+        <!--</div>-->
+        <div class="creatingSnippet window">
+            <p>Snippet description:</p>
+            <input class="inputWindow" for="newSnippet" type="text" autofocus maxlength="25" name="snippetName" placeholder="New Snippet" th:field="*{snippet_name}">
+            <span th:if="${#fields.hasErrors('snippet_name')}" th:errors="*{snippet_name}">..</span>
+            <select class="inputWindow" th:field="*{PLID}">
+                <option th:each="lang : ${langs}"
+                        th:value="${lang.PLID}"
+                        th:utext="${lang.PLName}"/>
+            </select>
+            <div class="tagList">
+                <input class="inputWindow" type="text" name="" id="" placeholder="#Tag1 #Tag2..." th:field="*{tags}">
+            </div>
+            <p>Ваш сниппет:</p>
+            <textarea class="inputWindow"name="snippet" placeholder="Your damn code" id="" cols="30" rows="10" wrap="off" th:field="*{code_text}"></textarea>
+            <span th:if="${#fields.hasErrors('code_text')}" th:errors="*{code_text}">..</span>
+            <input class="button" type="submit" value="Сохранить">
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
+<script type="text/javascript" th:src="@{/js/ajax.js}"></script>
+<script type="text/javascript" th:src="@{/js/LOX.js}"></script>
 </body>
 </html>

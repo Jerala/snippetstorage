@@ -1,9 +1,7 @@
 package me.studying.snippethub.service;
 
-import me.studying.snippethub.entity.Queries;
 import me.studying.snippethub.entity.Snippets;
 import me.studying.snippethub.utils.DBUtils;
-import me.studying.snippethub.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +31,7 @@ public class SnippetsServiceImpl {
             PreparedStatement stmt = connection.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
-            while(rs.next()) {
+            while (rs.next()) {
                 Snippets snippet = new Snippets();
                 snippet.setSnippetId(rs.getLong("SNIPPET_ID"));
                 snippet.setPLID(rs.getLong("PL_ID"));
@@ -48,8 +46,7 @@ public class SnippetsServiceImpl {
             }
             stmt.close();
             connection.close();
-        }
-        catch(SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e);
         }
         return snippets;
@@ -58,10 +55,10 @@ public class SnippetsServiceImpl {
     private List<String> getCombinationsOfKeyWords(String tagString) {
         List<String> tags = new ArrayList<>(Arrays.asList(tagString.split(" ")));
         // ограничение в 5 тегов
-        if(tags.size() > 5)
+        if (tags.size() > 5)
             tags = tags.subList(0, 5);
         List<String> combinationsOfTags = new ArrayList<>();
-        for(int i = tags.size(); i >= 1; i--)
+        for (int i = tags.size(); i >= 1; i--)
             combinationsOfTags.addAll(getCombinationsOfKeyWords(i, tags));
         return combinationsOfTags;
     }
@@ -70,16 +67,16 @@ public class SnippetsServiceImpl {
                                                    List<String> combinations) {
 
         List<String> newCombs = new ArrayList<>();
-        if(countOfTagsInOneCombination == 1) {
-            for(String i: combinations)
+        if (countOfTagsInOneCombination == 1) {
+            for (String i : combinations)
                 newCombs.add(i);
             return newCombs;
         }
         int prevSize = 0;
-        for(int i = 0; i < combinations.size(); i++) {
+        for (int i = 0; i < combinations.size(); i++) {
             String currElem = combinations.get(i);
             newCombs.addAll(getCombinationsOfKeyWords(countOfTagsInOneCombination - 1, combinations.subList(1 + i, combinations.size())));
-            for(int j = prevSize; j < newCombs.size(); j++)
+            for (int j = prevSize; j < newCombs.size(); j++)
                 newCombs.set(j, newCombs.get(j) + " " + currElem);
             prevSize = newCombs.size();
         }
@@ -90,19 +87,19 @@ public class SnippetsServiceImpl {
         StringBuilder query = new StringBuilder();
         query.append("SELECT foo.snippet_id, foo.pl_id, foo.snippet_name, " +
                 "foo.user_id,foo.upload_date, foo.like_count, foo.approved, foo.tags, sum(rs) as a FROM (");
-        for(int i = 0; i < combinations.size(); i++) {
+        for (int i = 0; i < combinations.size(); i++) {
             String[] words = combinations.get(i).split(" ");
             query.append("SELECT snippet_id, pl_id, snippet_name, user_id," +
                     "upload_date, like_count, approved, tags," + Integer.toString(words.length)
                     + " as rs FROM public.SNIPPETS WHERE TAGS LIKE ");
 
-            for(int j = 0; j < words.length; j++) {
-                if(j + 1 == words.length)
+            for (int j = 0; j < words.length; j++) {
+                if (j + 1 == words.length)
                     query.append("\'%" + words[j] + "%\' ");
                 else
                     query.append("\'%" + words[j] + "%\' AND TAGS LIKE ");
             }
-            if(i + 1 != combinations.size())
+            if (i + 1 != combinations.size())
                 query.append("\nUNION\n");
         }
         query.append(") as foo\n" +
@@ -115,12 +112,12 @@ public class SnippetsServiceImpl {
     public void registerSearchQuery(String tags) {
         // create query
         List<String> tagsArr = new ArrayList<>(Arrays.asList(tags.split(" ")));
-        if(tagsArr.size() > 5)
-            tagsArr = tagsArr.subList(0,5);
+        if (tagsArr.size() > 5)
+            tagsArr = tagsArr.subList(0, 5);
         tagsArr.sort(String::compareToIgnoreCase);
         StringBuilder query = new StringBuilder();
 
-        for(int i = 0; i < tagsArr.size() - 1; i++)
+        for (int i = 0; i < tagsArr.size() - 1; i++)
             query.append(tagsArr.get(i) + " ");
         query.append(tagsArr.get(tagsArr.size() - 1));
 
@@ -137,19 +134,18 @@ public class SnippetsServiceImpl {
             stmt.close();
 
             // create new row in table
-            if(counter == 0) {
+            if (counter == 0) {
                 PreparedStatement statement = connection
                         .prepareStatement(
                                 "INSERT INTO public.QUERIES (query, " +
                                         "counter, searched)" +
-                                " VALUES (?, ?, ?)");
+                                        " VALUES (?, ?, ?)");
                 statement.setString(1, query.toString());
                 statement.setLong(2, 1L);
                 statement.setDate(3, new java.sql.Date((new java.util.Date()).getTime()));
                 statement.executeUpdate();
                 statement.close();
-            }
-            else {
+            } else {
                 PreparedStatement statement = connection.prepareStatement(
                         "UPDATE public.QUERIES SET counter = counter + 1 WHERE query = ?");
                 statement.setString(1, query.toString());
@@ -157,7 +153,7 @@ public class SnippetsServiceImpl {
                 statement.close();
             }
             connection.close();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -171,6 +167,7 @@ public class SnippetsServiceImpl {
             stmt.setLong(2, userId);
             stmt.setString(3, snippetName);
             stmt.execute();
+            connection.close();
             return stmt.getLong(1);
         } catch (SQLException e) {
             System.out.println(e);

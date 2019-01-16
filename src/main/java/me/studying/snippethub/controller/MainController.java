@@ -2,23 +2,22 @@ package me.studying.snippethub.controller;
 
 import me.studying.snippethub.dao.PLangsDAO;
 import me.studying.snippethub.dao.QueriesDAO;
-import me.studying.snippethub.dao.SnippetsDAO;
 import me.studying.snippethub.entity.Queries;
 import me.studying.snippethub.entity.Snippets;
 import me.studying.snippethub.service.SnippetsServiceImpl;
 import me.studying.snippethub.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import java.security.Principal;
-import java.util.List;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.security.Principal;
+import java.util.List;
 
 
 @Controller
@@ -65,7 +64,7 @@ public class MainController {
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public List<Snippets> findSnippet(@RequestParam(value = "tagName", required = true,
-    defaultValue = ".") String tag) {
+            defaultValue = ".") String tag) {
         snippetsService.registerSearchQuery(tag.toLowerCase());
         return snippetsService.findSnippetByTag(tag.toLowerCase());
     }
