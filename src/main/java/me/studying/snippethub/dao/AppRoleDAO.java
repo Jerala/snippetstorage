@@ -42,6 +42,7 @@ public class AppRoleDAO extends JdbcDaoSupport {
             CallableStatement stmt = con.prepareCall("{? = call GETMAXROLEUSERID()}");
             stmt.registerOutParameter(1, Types.INTEGER);
             stmt.execute();
+            con.close();
             return (long)stmt.getInt(1);
         }
         catch(SQLException e) {

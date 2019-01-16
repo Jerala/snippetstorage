@@ -20,6 +20,8 @@ public class LikeServiceImpl {
             statement.setLong(2, currUserId);
             ResultSet rs = statement.executeQuery();
             if(rs.next()) return "yes";
+            statement.close();
+            connection.close();
         } catch(SQLException e) {
             System.out.println(e);
         }
@@ -82,5 +84,6 @@ public class LikeServiceImpl {
         }
         statement.setLong(1, snippetId);
         statement.executeUpdate();
+        statement.close();
     }
 }

@@ -1,14 +1,10 @@
 package me.studying.snippethub.service;
 
-import me.studying.snippethub.dao.SnippetsDAO;
 import me.studying.snippethub.entity.Snippets;
 import me.studying.snippethub.entity.Users;
 import me.studying.snippethub.repositories.SnippetsRepository;
 import me.studying.snippethub.repositories.UsersRepository;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -49,7 +45,7 @@ public class AdminServiceImpl {
     public String approveSnippet(Long userId, String snippet_name) {
         Long snippet_id = snippetsService.getSnippetId(userId, snippet_name);
         Snippets snippet = this.snippetsRepository.findById(snippet_id).orElse(null);
-        if(snippet == null)
+        if (snippet == null)
             return "failed";
         snippet.setApproved(1);
         try {
@@ -65,7 +61,7 @@ public class AdminServiceImpl {
         Long id = snippet.getSnippetId();
         Snippets existingSnippet = this.snippetsRepository
                 .findById(id).orElse(null);
-        if(existingSnippet == null)
+        if (existingSnippet == null)
             return "failed";
         try {
             this.snippetsRepository.save(snippet);

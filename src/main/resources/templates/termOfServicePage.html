@@ -1,14 +1,13 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:utext="${title}"></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/js/newStyle.css}">
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
+    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
 </head>
-
-<body onload="getMostPopularQueries();">
-
+<body>
 <div class="container">
     <div class="navBar navBarMargin">
         <a href="/" class="logo" title="Main Page">SCS</a>
@@ -22,7 +21,7 @@
         <a class="headlink" th:if="${#request.userPrincipal == null}" th:href="@{/register}">Registration</a>
         <a th:if="${#request.userPrincipal != null}" th:href="@{/profile}" class="headlink">Profile</a>
         <a th:if="${#request.userPrincipal != null}" th:href="@{/upload}" class="headlink">Create new snippet</a>
-        <a th:if="${#request.isUserInRole('ROLE_ADMIN')}" th:href="@{/adminPanel}" class="headlink">Admin Panel</a>
+        <a th:if="${#request.userPrincipal != null}" th:href="@{/adminPanel}" class="headlink">Admin Panel</a>
         <a th:if="${#request.userPrincipal != null}" th:href="@{/logout}" class="headlink">Logout</a>
 
         <div class="signIn" th:if="${#request.userPrincipal == null}">
@@ -39,19 +38,11 @@
             </div>
         </div>
     </div>
-    <div class="mainBlock">
-        <div class="emptyField">
-            <br>
-        </div>
-        <div class="usersSnippets bor1"></div>
-        <div class="searchResults"></div>
-        <div class="popularSearch">
-            <p>Popular search:</p>
-        </div>
+    <div class="flexContainer">
+    <textarea readonly rows="25" cols="45"
+              name="notes" th:inline="text">[[${licenseText}]]
+</textarea>
     </div>
 </div>
 </body>
-<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
-<script type="text/javascript" th:src="@{/js/ajax.js}"></script>
-<script type="text/javascript" th:src="@{/js/LOX.js}"></script>
 </html>

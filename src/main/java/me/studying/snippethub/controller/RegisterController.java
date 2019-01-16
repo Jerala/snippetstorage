@@ -5,6 +5,7 @@ import me.studying.snippethub.dao.AppUserDAO;
 import me.studying.snippethub.entity.UserRole;
 import me.studying.snippethub.formbean.AppUserForm;
 import me.studying.snippethub.entity.Users;
+import me.studying.snippethub.service.UserDetailsServiceImpl;
 import me.studying.snippethub.validator.AppUserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,7 +49,7 @@ public class RegisterController {
     @RequestMapping("/registerSuccessful")
     public String viewRegisterSuccessful(Model model) {
 
-        return "registerSuccessfulPage";
+        return "welcomePage";
     }
 
     // Show Register page.
@@ -93,5 +94,13 @@ public class RegisterController {
         redirectAttributes.addFlashAttribute("flashUser", newUser);
 
         return "redirect:/registerSuccessful";
+    }
+
+    @RequestMapping(value = "/termOfService/termOfService.txt", method = RequestMethod.GET)
+    public String getTermOfService(Model model) {
+
+        String licenseText = UserDetailsServiceImpl.getLicenseText();
+        model.addAttribute("licenseText", licenseText);
+        return "termOfServicePage";
     }
 }
